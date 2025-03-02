@@ -13,3 +13,6 @@ tutorial:
 clean:
 	rm -f $(PRODUCTS) 
 	@rm -r $(SYMBOLS) 2</dev/null 
+
+all: $(SOURCES:.c= )
+
