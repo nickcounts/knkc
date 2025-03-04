@@ -1,6 +1,6 @@
 CFLAGS=-Wall -g
 
-SOURCES := $(wildcard proj*.c ex*.c numdigits*.c square*.c checking*.c)
+SOURCES := $(wildcard proj*.c ex*.c sum2*.c length*.c checking*.c)
 PRODUCTS := $(SOURCES:.c= *.o)
 SYMBOLS := $(SOURCES:.c=.dSYM)
 
