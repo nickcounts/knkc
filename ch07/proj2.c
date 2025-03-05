@@ -12,12 +12,15 @@ int main(void) {
 
   int line_count = 1;
   for (int n = 1; n <= entries; n++) {
+
     printf("%10d %10d\n", n, n * n);
     line_count++;
+
     if (line_count > 24) {
       printf("Press Enter to continue...");
-      char tmp = getchar();
-      printf("\n");
+      fflush(stdin); // Some extra newline was stuck in the stdin buffer?:
+      while (getchar() != '\n')
+        ;
       line_count = 1;
     }
   }
