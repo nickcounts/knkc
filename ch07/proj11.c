@@ -8,6 +8,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+char *get_next_tok(char *input, int i_start) {
+  // 128 byte char array to hold tokens. This is probably a tad big
+  char *token;
+  token = malloc(sizeof(char) * 128);
+
+  int pos = i_start;
+  int i_tok = 0;
+  while (input[pos] == ' ') {
+    pos++;
+  }
+  while (input[pos] != ' ' && input[pos] != '\n' && input[pos] && i_tok < 128) {
+    token[i_tok] = input[pos];
+    i_tok++;
+  }
+  return token;
+}
+
 int main(int argc, char *argv[]) {
   char c;
   char fullname[256];
@@ -22,6 +39,11 @@ int main(int argc, char *argv[]) {
     fullname[i] = c;
     i++;
   }
+
+  char test_tok[128];
+  printf("get_next_tok() returned: ");
+  printf("%s\n", get_next_tok(fullname, 0));
+  return 0;
 
   // printf("User entered: %s\n", fullname);
 
