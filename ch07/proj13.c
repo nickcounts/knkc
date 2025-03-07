@@ -57,7 +57,8 @@ int main(int argc, char *argv[]) {
     if (this_tok->first > this_tok->last) {
       break;
     }
-    printf("%d\t%d\t%s\n", this_tok->first, this_tok->last, this_tok->token);
+
+    // printf("%d\t%d\t%s\n", this_tok->first, this_tok->last, this_tok->token);
 
     num_toks++;
     num_chars += (this_tok->last - this_tok->first + 1);
