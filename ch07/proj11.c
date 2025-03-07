@@ -55,5 +55,7 @@ int main(int argc, char *argv[]) {
 
   printf("%s, %c.\n", tok_last->token, tok_first->token[0]);
 
+  free(tok_first);
+  free(tok_last);
   return EXIT_SUCCESS;
 }
