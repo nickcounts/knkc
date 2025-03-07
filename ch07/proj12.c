@@ -7,39 +7,58 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define BUFFER_SIZE 128
+
 char c;
 char operand = '\n';
-char buffer[32];
-float result, value;
+char buffer[BUFFER_SIZE];
+char user_input[BUFFER_SIZE];
+double result, value;
 int i_buf = 0;
 int first_entry = 1;
 
-void perform_operation(float res, char op, float val) {
+void perform_operation(double res, char op, double val) {
+
   switch (op) {
   case '+':
-    value = res + val;
+    result = res + val;
     break;
   case '-':
-    value = res - val;
+    result = res - val;
     break;
   case '*':
-    value = res * val;
+    result = res * val;
     break;
   case '/':
-    value = res / val;
+    result = res / val;
     break;
   case '\n':
-    value = val;
+    result = val;
   }
-  printf("Called perform_operation(%f, %c, %f)\n", res, op, val);
 }
 
 int main(int argc, char *argv[]) {
   printf("Enter an expression to evaluate: ");
+  scanf("%[^\n]s", user_input);
 
-  // Read in with getchar
-  while ((c = getchar()) != '\n') {
-    if (('0' < c && c > '9') || c == '.') {
+  int i_user = 0;
+  // Parse input buffer in order
+  // loop-and-a-half. Every operator detection calls the calc
+  // code with the **LAST** operand.
+  //
+  // That means the first one is called with a number and the
+  // SENTINEL OPERATOR, which simply sets the result value
+  // (it's the starting point of the calc)
+  //
+  // Subsequent operator detections trigger a value creation
+  // and call calculate using the PREVIOUS OPERAOR.
+  //
+  // That means we need one final calculate call after the
+  // loop is completed.
+  while (user_input[i_user]) {
+    c = user_input[i_user];
+
+    if ((c >= '0' && c <= '9') || c == '.') {
       // User is entering a value
       buffer[i_buf] = c;
       i_buf++;
@@ -48,15 +67,17 @@ int main(int argc, char *argv[]) {
 
       value = atof(buffer);
       // Reset buffer and index
-      memset(buffer, 0, 32);
+      memset(buffer, 0, BUFFER_SIZE);
       i_buf = 0;
 
       perform_operation(result, operand, value);
 
       operand = c;
     }
+    i_user++;
   }
 
+  value = atof(buffer);
   perform_operation(result, operand, value);
   printf("Result: %f\n", result);
   return EXIT_SUCCESS;
