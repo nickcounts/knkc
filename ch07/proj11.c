@@ -8,28 +8,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char *get_next_tok(char *input, int i_start) {
+struct tok_struct {
+  char token[128];
+  int first;
+  int last;
+};
+
+typedef struct tok_struct tok_struct;
+
+tok_struct *get_next_tok(char *input, int i_start) {
   // 128 byte char array to hold tokens. This is probably a tad big
-  char *token;
-  token = malloc(sizeof(char) * 128);
+  tok_struct *token;
+  token = malloc(sizeof(tok_struct));
 
   int pos = i_start;
   int i_tok = 0;
   while (input[pos] == ' ') {
     pos++;
   }
+  token->first = pos;
   while (input[pos] != ' ' && input[pos] != '\n' && input[pos] && i_tok < 128) {
-    token[i_tok] = input[pos];
+    token->token[i_tok] = input[pos];
     i_tok++;
+    pos++;
   }
+  token->last = pos - 1;
+
   return token;
 }
 
 int main(int argc, char *argv[]) {
   char c;
   char fullname[256];
-  char first[256];
-  char last[256];
   int i = 0;
 
   // This gets the input but doesn't handle backspace... whole thing is a tad
@@ -40,63 +50,12 @@ int main(int argc, char *argv[]) {
     i++;
   }
 
-  char test_tok[128];
-  printf("get_next_tok() returned: ");
-  printf("%s\n", get_next_tok(fullname, 0));
-  return 0;
+  tok_struct *tok_first = get_next_tok(fullname, 0);
+  tok_struct *tok_last = get_next_tok(fullname, tok_first->last + 1);
 
-  // printf("User entered: %s\n", fullname);
+  printf("%s, %c.\n", tok_last->token, tok_first->token[0]);
 
-  // This whole chunk is really a tokenizer that's been repeated.
-  // If I have to do this again, I should look at breaking it out
-  // into a function. Do I return a token, or a start/stop index?
-
-  int i_full, i_first, i_last;
-  i_full = i_first = i_last = 0;
-
-  // Find First Name
-  while (i_full < 256) {
-    if (fullname[i_full] != ' ') {
-      break;
-    }
-    i_full++;
-  }
-
-  // Populate First Name
-  while (i_full < 256) {
-    if (fullname[i_full] == ' ') {
-      // End of first name
-      first[i_first] = 0;
-      i_full++;
-      break;
-    }
-    first[i_first] = fullname[i_full];
-    i_first++;
-    i_full++;
-  }
-
-  // Find Start of Last Name
-  while (i_full < 256) {
-    if (fullname[i_full] != ' ') {
-      break;
-    }
-    i_full++;
-  }
-
-  // Populate Last Name
-  while (i_full < 256) {
-    if (fullname[i_full] == ' ') {
-      // End of last name
-      last[i_last] = 0;
-      i_full++;
-      break;
-    }
-    last[i_last] = fullname[i_full];
-    i_last++;
-    i_full++;
-  }
-
-  printf("%s, %c.\n", last, first[0]);
-
+  free(tok_first);
+  free(tok_last);
   return EXIT_SUCCESS;
 }
