@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #define N 10
 #define SIZE ((int)(sizeof(a) / sizeof(a[0])))
@@ -21,7 +22,7 @@ int main(int argc, char *argv[]) {
   // Array initialization
   int b[N] = {0}; // initialize all values to 0
   int c[N] = {[2] = 29, [9] = 7};
-  // c is initialized to {0, 0, 29, 0, 0, 0, 0, 0, 0, 7}
+  // c is initialized to {0e 0, 29, 0, 0, 0, 0, 0, 0, 7}
 
   int d[N] = {5, 1, 9, [4] = 3, 7, 2};
   // d is initialized to {5, 1, 9, 0, 3, 7, 2, 0, 0, 0}
@@ -49,6 +50,16 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < SIZE; i++) {
     // Loop over the entire array
   }
+
+  // Array assignment
+  // a = b
+  // This is NOT legal, because a and b are actually pointers to the memory
+  // that stores the arrays. So, the above does not make the contents of a
+  // the same as b's.
+  //
+  // To copy array contents, the simplest way is to loop through and assign
+  // each element. Otherwise, you can use `memcpy` from <string.h>
+  memcpy(a, b, sizeof(a));
 
   return 0;
 }
