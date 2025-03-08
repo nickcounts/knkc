@@ -32,7 +32,7 @@ void init_chess_board() {
   // Display board:
   for (int row = 0; row < 8; row++) {
     for (int col = 0; col < 8; col++) {
-      printf("%3c", chess_board[row][col]);
+      printf("%2c", chess_board[row][col]);
     }
     printf("\n");
   }
@@ -42,27 +42,20 @@ void init_checker_board() {
   char checker_board[8][8];
   for (int row = 0; row < 8; row++) {
     for (int col = 0; col < 8; col++) {
-      if (((row + col) % 2) == 0) {
-        // Even numbers (starting at 0,0)
-        checker_board[row][col] = 'B';
-      } else {
-        checker_board[row][col] = 'R';
-      }
+      checker_board[row][col] = ((row + col) % 2 == 0) ? 'B' : 'R';
     }
   }
 
   // Display board:
   for (int row = 0; row < 8; row++) {
     for (int col = 0; col < 8; col++) {
-      printf("%3c", checker_board[row][col]);
+      printf("%2c", checker_board[row][col]);
     }
     printf("\n");
   }
 }
 
 int main(int argc, char *argv[]) {
-  printf("argc   : %d\n", argc);
-  printf("argv[1]: %s\n", argv[1]);
 
   if (argc < 2) {
     printf("Please specify the game: chess or checkers\n");
