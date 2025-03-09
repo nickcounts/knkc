@@ -8,14 +8,13 @@
 #define ELEMENTS(a) (int)(sizeof(a) / sizeof(a[0]))
 
 int main(int argc, char *argv[]) {
-  int m[5][5];
 
   int student_total[5] = {0};
   int student_avg[5] = {0};
 
   int high[5] = {0};
   int low[5] = {99999};
-  int quiz_tot[5];
+  int quiz_tot[5] = {0};
   int quiz_avg[5];
 
   int this_value;
@@ -49,16 +48,23 @@ int main(int argc, char *argv[]) {
     quiz_avg[q] = quiz_tot[q] / 5;
   }
 
-  printf("\nStudent Averages: ");
+  printf("\nStudent Statistics:\n---------------------------------\n");
 
   int i = 0;
-  while (i < ELEMENTS(student_avg))
-    printf(" %d", student_avg[i++]);
+  while (i < ELEMENTS(student_avg)) {
+    printf("Student %d    Total Score: %3d     Average Score: %3d\n", i + 1,
+           student_total[i], student_avg[i]);
+    i++;
+  }
 
-  printf("\nQuiz Average Scores: ");
+  printf("\nQuiz Statistics:\n---------------------------------\n");
   i = 0;
-  while (i < ELEMENTS(quiz_avg))
-    printf(" %d", quiz_avg[i++]);
+  while (i < ELEMENTS(quiz_avg)) {
+    printf("Quiz %d       High Score: %3d      Low Score: %3d     Average "
+           "Score: %3d\n",
+           i + 1, high[i], low[i], quiz_avg[i]);
+    i++;
+  }
 
   printf("\n\n");
 
