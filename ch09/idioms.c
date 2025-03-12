@@ -13,6 +13,8 @@ void my_void_func(void) {
 // them to be called in fuctions that are written before the function
 // definition
 void store_zeros(int a[], int n);
+int fact(int n);
+int power(int x, int n);
 
 // C99 will often allow `void my_void_func()` but to be strict, include
 // void when no parameters are defined
@@ -37,6 +39,10 @@ int main(int argc, char *argv[]) {
     printf(" %d", b[i]);
 
   printf("\n");
+
+  printf("5! = %d\n", fact(5));
+  printf("power(2, 8) = %d\n", power(2, 8));
+
   return 0;
 }
 
@@ -67,3 +73,18 @@ void store_zeros(int a[], int n) {
 // Recursion
 //
 // Can't believe we're packing all of this into chapter 9!
+// Recursion means calling yourself. Factorial is a classic example:
+
+int fact(int n) {
+  if (n <= 1)
+    return 1;
+  else
+    return n * fact(n - 1);
+}
+
+int power(int x, int n) {
+  if (n == 0)
+    return 1;
+  else
+    return x * power(x, n - 1);
+}
