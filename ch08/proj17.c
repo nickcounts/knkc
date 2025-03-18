@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 
   for (r = 0; r < N; r++) {
     for (c = 0; c < N; c++) {
-      printf("%4d", m[r][c]);
+      printf("%5d", m[r][c]);
     }
     printf("\n");
   }

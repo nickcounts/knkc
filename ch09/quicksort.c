@@ -38,7 +38,8 @@ void quicksort(int a[], int low, int high) {
 int split(int a[], int low, int high) {
   int part_element = a[low];
 
-  for (;;) {
+  for (;;) { // infinite loop idiom: (;;)
+    // no conditional expression, defaults to false
     while (low < high && part_element <= a[high])
       high--;
     if (low >= high)
