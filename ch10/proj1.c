@@ -54,26 +54,49 @@ char pop(void) {
 
 int main(int argc, char *argv[]) {
   char this_char;
+  int count = 0;
 
   printf("Enter parentheses and/or braces: ");
   for (;;) {
+    fflush(stdin);
     this_char = getchar();
+
     switch (this_char) {
     case '\n':
       if (is_empty()) {
         printf("Parentheses are nested properly.\n");
-        break;
+        return EXIT_SUCCESS;
+      } else {
+        printf("Improperly nested braces.\n");
+        return EXIT_FAILURE;
       }
     case '(':
+      count++;
       push(this_char);
       break;
     case '{':
+      count++;
       push(this_char);
       break;
     case ')':
-      while (pop() != ')') {
-        ;
+      while (1) {
+        printf("unwinding ) : count = %d\n", count);
+        if (pop() != ')') {
+          break;
+        }
+        count--;
       }
+      break;
+    case '}':
+      while (1) {
+        printf("unwinding } : count = %d\n", count);
+        if (pop() != '}') {
+          break;
+        }
+        count--;
+      }
+      break;
+    default:
       break;
     }
   }
