@@ -92,8 +92,49 @@ void sec_11_3(void) {
   printf("*q = %d\n", *q); // prints 1
 }
 
+void decompose(double x, long *int_part, double *frac_part) {
+  // we are passed pointers, and we use them with standard indirection
+  *int_part = (long)x;
+  *frac_part = x - *int_part;
+}
+
+void sec_11_4(void) {
+  // Pointers as Arguments
+  printf("\nPointers as Arguments\n--------------------\n");
+
+  // C passes arguments by value. If you need a function to modify a variable
+  // outside the function (Functional bros will NOT be happy about this) then
+  // you can pass a pointer to the variable as an argument.
+
+  long int_part;
+  double frac_part;
+  decompose(3.1592935, &int_part, &frac_part);
+  printf("\nThe integer part is: %ld\n", int_part);
+  printf("The decimal part is: %f\n", frac_part);
+
+  // See the maxmin.c example
+
+  // Using Const to protect arguments:
+  //
+  // If we pass a pointer as an argument to a function, we normally
+  // expect the function will modify the variable. If we see:
+  //
+  // f(&x);
+  //
+  // we'd expect `f()` to change the value of `x`
+  //
+  // We can use the word `const` to document that a function won't change
+  // an object whose address is passed to the funtion. `const` goes in the
+  // parameter's declaration, just before the type specification:
+  //
+  // void f(const int *p) {
+  //   *p = 0; // WRONG!!! Should produce compiler error?
+  // }
+}
+
 int main(int argc, char *argv[]) {
   sec_11_2();
   sec_11_3();
+  sec_11_4();
   return EXIT_SUCCESS;
 }
