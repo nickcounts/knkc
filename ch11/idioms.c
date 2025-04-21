@@ -132,9 +132,74 @@ void sec_11_4(void) {
   // }
 }
 
+int *max(int *a, int *b) {
+  // Returns a pointer to the larger dereferenced integer
+  if (*a > *b)
+    return a;
+  else
+    return b;
+}
+
+int *find_middle_element(int a[], int n) {
+  // Returns a pointer to the middle element of the n-element array a[]
+  return &a[n / 2];
+}
+
+void sec_11_5(void) {
+  // Pointers as Return Values
+  printf("\nPointers as return Values\n--------------------\n");
+
+  // We can return a pointer from a function - more on this in ch13
+  //
+  /* Example Program
+   * -------------------------------
+      int *max(int *a, int *b) {
+        if (*a > *b)
+          return a;
+        else
+          return b;
+      }
+  * -------------------------------- */
+
+  // Invoke as follows:
+  int *p, i, j;
+  i = 5;
+  j = -3;
+  p = max(&i, &j);
+
+  printf("Set two integer values: i=%d and j=%d\n", i, j);
+  printf("Called p = max(&i, &j);\n");
+  printf("p = %p and *p = %d\n", (void *)p, *p);
+
+  // DANGER!!!
+  //
+  // Never return a pointer to an automatic local variable:
+  /* Example of a bad function:
+  * ------------------------------
+      int *f(void) {
+        int auto_local;
+        return &auto_local;
+      }
+  * ------------------------------ */
+
+  // the auto_local variable doesn't exist when the function returns,
+  // so you end up with a pointer to invalid memory (it's been freed)
+
+  // Pointers are useful with arrays, too. This is covered in chapter 12
+  int a[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  int *me = find_middle_element(a, 10);
+  printf("\nPointers and arrays:\n");
+  printf("a[10] = {1,2,3,4,5,6,7,8,9,10}\n");
+  printf("&a = %p, me = %p and *me = %d\n", &a, me, *me);
+
+  // Note: The "find middle" doesn't actually do that good a job. Maybe it's
+  // the zero-based index
+}
+
 int main(int argc, char *argv[]) {
   sec_11_2();
   sec_11_3();
   sec_11_4();
+  sec_11_5();
   return EXIT_SUCCESS;
 }
