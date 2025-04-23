@@ -46,3 +46,45 @@ PARTICULAR PURPOSE.
 
 This program built for i386-apple-darwin11.3.0
 ```
+
+# Debugging on MacOS w/ clang
+
+I have had luck using `lldb`, the pre-installed debugger
+
+```zsh
+lldb ./ex4
+Current executable set to '/Users/nick/Developer/c/knkc/ch11/ex4' (arm64).
+(lldb) breakpoint set --file ex4.c --line 14
+Breakpoint 1: where = ex4`swap + 12 at ex4.c:14:15, address = 0x000000010000046c
+(lldb) run
+Process 69513 launched: '/Users/nick/Developer/c/knkc/ch11/ex4' (arm64)
+p = 10, q = 20
+Process 69513 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+    frame #0: 0x000000010000046c ex4`swap(p=0x000000016fdfea6c, q=0x000000016fdfea68) at ex4.c:14:15
+   11   #define DEBUG 0
+   12
+   13   void swap(int *p, int *q) {
+-> 14     int temp = *p;
+   15     if (DEBUG) {
+   16       printf("In swap()\n");
+   17       printf("swap(%p, %p)\n", p, q);
+Target 0: (ex4) stopped.
+(lldb) v
+(int *) p = 0x000000016fdfea6c
+(int *) q = 0x000000016fdfea68
+(int) temp = 1
+(lldb) s
+Process 69513 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = step in
+    frame #0: 0x0000000100000478 ex4`swap(p=0x000000016fdfea6c, q=0x000000016fdfea68) at ex4.c:20:9
+   17       printf("swap(%p, %p)\n", p, q);
+   18       printf("int temp = %d\n", temp);
+   19     }
+-> 20     *p = *q;
+   21     *q = temp;
+   22     if (DEBUG)
+   23       printf("q = %p\n", q);
+Target 0: (ex4) stopped.
+(lldb)
+```
