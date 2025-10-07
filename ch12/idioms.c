@@ -118,6 +118,7 @@ void sec_12_3(void) {
 
 int main(int argc, char *argv[]) {
   printf("Chapter 12: Pointers and Arrays\n----------------------------\n\n");
+
   sec_12_1();
   sec_12_2();
   sec_12_3();
