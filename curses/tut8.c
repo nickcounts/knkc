@@ -70,6 +70,7 @@ void user_input(Player *player, Room *room, WINDOW *room_win) {
 
   int input = wgetch(room_win);
   switch (input) {
+  case 'w':
   case 'k':
   case 'K':
   case KEY_UP:
@@ -77,6 +78,7 @@ void user_input(Player *player, Room *room, WINDOW *room_win) {
     move_player_up(player, room);
     break;
 
+  case 's':
   case 'j':
   case 'J':
   case KEY_DOWN:
@@ -84,6 +86,7 @@ void user_input(Player *player, Room *room, WINDOW *room_win) {
     move_player_down(player, room);
     break;
 
+  case 'a':
   case 'h':
   case 'H':
   case KEY_LEFT:
@@ -91,6 +94,7 @@ void user_input(Player *player, Room *room, WINDOW *room_win) {
     move_player_left(player, room);
     break;
 
+  case 'd':
   case 'l':
   case 'L':
   case KEY_RIGHT:
@@ -102,7 +106,8 @@ void user_input(Player *player, Room *room, WINDOW *room_win) {
     break;
   }
 
-  if (input == KEY_ESC || input == 'q' || input == 'Q') {
+  if (input == KEY_ESC || input == 'q' || input == 'Q' || input == 'x' ||
+      input == 'X') {
     endwin();
     exit(EXIT_SUCCESS);
   }
