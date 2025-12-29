@@ -27,7 +27,8 @@ int main(int argc, char *argv[]) {
 
   int c;
   while ((c = getch()) != 'x') {
-    printw("%d\n", c);
+    if (c >= 0)
+      printw("%d\n", c);
   }
 
   endwin();
