@@ -28,7 +28,8 @@ void capitalize_ptr(char s[], int n){
   char *p = &s[0];
 
   while (*p && (p-s) < n && (p-s) < BUFF_LEN){
-    *p = toupper(*p);
+    if ('a' <= *p && *p <= 'z')
+      *p -= 'A'-'a';
     p++;
   }
 }
