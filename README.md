@@ -88,3 +88,44 @@ Process 69513 stopped
 Target 0: (ex4) stopped.
 (lldb)
 ```
+
+# Pointers to Sized Arrays
+
+There is a great [explanation](https://stackoverflow.com/questions/1810083/c-pointers-pointing-to-an-array-of-fixed-size) on Stack Overflow
+
+Fixed-sized arrays are determined at compile time. `clang` and other compilers
+can enforce type checking and prevent buffer overruns if the following 
+conventions are followed:
+
+```c
+void foo(char (*p)[10]);
+```
+
+This is actually equivalent to typedef, though less explicit:
+
+```c
+typedef int t_myPair[2];
+
+void foo(t_myPair *thisPair){
+    /* Equivalent to: void foo(int (*thisPair)[2]) */
+}
+
+t_myPair a_pair;
+foo(&a_pair);
+```
+
+The function definition/argument is the same if the type is an array or a 
+struct.
+
+This method is less commonly seen in most code because the syntax looks
+trickier, and because not everyone considers passing fixed sized arrays 
+as that worthwhile?
+
+
+For runtime-sizing, the following method:
+
+```
+char (*p)[10] = malloc(sizeof(*p));
+
+foo(p);
+```
