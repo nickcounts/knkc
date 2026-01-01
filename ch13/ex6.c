@@ -12,9 +12,9 @@
 
 // Copy the in string to the buff string. If in is longer than BUFF_LEN the
 // extra characters will be truncated. buff[] will always be null-terminated
-void copy_to_string_buffer(char in[], char buff[BUFF_LEN]){
-  printf("in   : %p]\n", in);
-  printf("buff : %p]\n", buff);
+void copy_to_string_buffer(char in[], char buff[]){
+  printf("in   : %p\n", in);
+  printf("buff : %p\n", buff);
   return;
 
   char *bp = buff;
@@ -44,7 +44,9 @@ typedef struct {
 } t_token_pos;
 
 // Returns a struct with first and last char of matching token in buff
-t_token_pos find_token_in_string(char tok[], char buff[BUFF_LEN]){
+t_token_pos find_token_in_string(char tok[], char *buff){
+  printf("tok  : %p\n", tok);
+  printf("buff : %p\n", buff);
 
   printf("Searching: %s\n", buff);
   printf("For token: %s\n", tok);
@@ -58,6 +60,7 @@ t_token_pos find_token_in_string(char tok[], char buff[BUFF_LEN]){
   
   // Start at beginning of buff, look for first char of token
   while (bp - buff < BUFF_LEN - strlen(tok)) {
+    printf("Testing buffer char: %c\n", *bp);
     if (*bp == *tok) {
       printf("Match first tok char: %c\n", *tok);
       // We have a match on the first character
@@ -87,7 +90,8 @@ t_token_pos find_token_in_string(char tok[], char buff[BUFF_LEN]){
         this_tok.first = 0;
         continue;
       }
-
+    } else if (*bp == 0) {
+      return this_tok;
     }
     bp++;
   }
@@ -100,16 +104,25 @@ t_token_pos find_token_in_string(char tok[], char buff[BUFF_LEN]){
 
 int main(int argc, char *argv[]){
 
-  char *buff[BUFF_LEN];
+  char buff[BUFF_LEN] = "";
+
+  printf("Address of original buff: %p\n", &buff);
+  char *bp = &buff[BUFF_LEN];
+  printf("Address of char *bp=buff: %p\n", bp);
+  *bp = 'T';
+  printf("modified buff = %s\n", buff); 
+
+
+
+
   if ( argc - 1 ){
-    printf("%s\n", argv[argc-1]);
-    copy_to_string_buffer(argv[argc-1], *buff);
-    printf("buff set to: %s\n", argv[argc-1]);
+    copy_to_string_buffer(argv[argc-1], buff);
+    printf("buff set to: %s\n", buff);
   } else {
-    copy_to_string_buffer(DEFAULT_STR, *buff);
+    copy_to_string_buffer(DEFAULT_STR, buff);
   }
 
-  t_token_pos this_token = find_token_in_string("foo", *buff);
+  t_token_pos this_token = find_token_in_string("foo", buff);
   printf("Match found: %s\n", this_token.token_found ? "YES" : "NO");
 
 
