@@ -25,10 +25,11 @@
 #define DEFAULT_MINUTE 30
 
 typedef struct{
-  int day;                   // day of month
-  int time;                  // minute of day
-  char message[MSG_LEN + 9]; // 'dd tttt '
+  int day;                    // day of year (for Part C)
+  int time;                   // minute of day
+  char message[MSG_LEN + 12]; // 'mm/dd [tttt] '
 } mst_reminder;
+
 
 int read_line(char str[], int n);
 int get_time_from_message(char str[], int n);
@@ -50,11 +51,12 @@ int main(void) {
 
     mst_reminder this_reminder = {0, 0, ""};
 
-    // Part B)
-    // Allow the user to enter a time. "Allow" implies not required?
-    // Look for string that matches a time as part of the reminder message
-    // Return "default time" if none is found
-    // Storing time as minute-of-the-day
+     /* Part B)
+        Allow the user to enter a time. "Allow" implies not required?
+        Look for string that matches a time as part of the reminder message
+        Return "default time" if none is found
+        Storing time as minute-of-the-day
+      */
     printf("Enter day and reminder: ");
     scanf("%2d", &day);
     if (day < 1)
