@@ -281,27 +281,8 @@ mst_user_input get_user_input(char * prompt_str){
   return response;
 }
 
-// Requires a c-string, null-terminated.
-// Only supports positive integers
-/*
-   int int_from_str(const char *str){
-   int end = strlen(str);
-   int this_int = 0;
-   int place_coefficient = 1;
 
-   if (end < 1)
-   return this_int;
 
-   end--; // Start on last character, not null-terminator
-
-   for (int i = end; i>=0; i--){
-// printf("%d's place = %c\n", place_coefficient, str[i]);
-this_int += (str[i] - '0')*place_coefficient;
-place_coefficient *= 10;
-}
-return this_int;
-}
- */
 
 void print_input(mst_user_input input){
   printf("    day: %d\n", input.day);
