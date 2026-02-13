@@ -17,22 +17,41 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "../ncb/ncb.h"
 
 #define MAX_REMIND 50
 #define MSG_LEN 60
 #define DEFAULT_HOUR 16
 #define DEFAULT_MINUTE 30
+#define DEBUG_PRINT 0
 
 typedef struct{
+  int month;                  // month num
   int day;                    // day of year (for Part C)
   int time;                   // minute of day
   char message[MSG_LEN + 12]; // 'mm/dd [tttt] '
 } mst_reminder;
 
+typedef struct{
+  int month;
+  int day;
+  char reminder_str[MSG_LEN + 1];
+  char original_str[MSG_LEN + 1];
+} mst_user_input ;
 
-int read_line(char str[], int n);
+
+/*
+   ----------------------------------------------
+   |            Function Prototypes             |
+   ----------------------------------------------
+ */
+
 int get_time_from_message(char str[], int n);
+bool is_string_valid_format(char *fmt_str, const char* str);
+mst_user_input get_user_input(char * prompt_str);
+// int int_from_str(const char *str);
+void print_input(mst_user_input input);
 
 
 
@@ -40,8 +59,7 @@ int main(void) {
   mst_reminder reminders[MAX_REMIND];
 
   // char reminders[MAX_REMIND][MSG_LEN+3];
-  char day_str[3], msg_str[MSG_LEN+1];
-  int day, r_num, num_remind = 0;
+  int r_num, num_remind = 0;
 
   for (;;) {
     if (num_remind == MAX_REMIND) {
@@ -49,47 +67,79 @@ int main(void) {
       break;
     }
 
-    mst_reminder this_reminder = {0, 0, ""};
+    mst_reminder this_reminder = {0, 0, 0, ""};
+    mst_user_input this_input = get_user_input("Enter day and reminder: ");
 
-     /* Part B)
-        Allow the user to enter a time. "Allow" implies not required?
-        Look for string that matches a time as part of the reminder message
-        Return "default time" if none is found
-        Storing time as minute-of-the-day
-      */
-    printf("Enter day and reminder: ");
-    scanf("%2d", &day);
-    if (day < 1)
-      break;
+    if (DEBUG_PRINT) print_input(this_input);
 
-    // Part A)
-    // Ignore numbers greater than 31
-    if (day > 31){
-      printf("\n%2d is not a valid day of the month. Please try again\n", day);
-      clear_input_buffer();
+    /* Part B)
+       ----------------------------------------------------------------------
+       Allow the user to enter a time. "Allow" implies not required?
+       Look for string that matches a time as part of the reminder message
+       Return "default time" if none is found
+       Storing time as minute-of-the-day
+       */
+    
+    if (this_input.month == -1){
+      // User might be done!
+      if (this_input.original_str[0] == '0'){
+        break;
+      } else {
+        puts("Invalid entry. Please use mm/dd");
+        continue;
+      }
+    }
+
+    /* Part A)
+       ----------------------------------------------------------------------
+       Ignore numbers greater than 31
+       */
+    if ((this_input.month > 12) || this_input.day > 31){
+      // Prompt for valid date
+      puts("Please enter a valid date in the form mm/dd");
       continue;
     }
 
-    this_reminder.day = day;
+    this_reminder.day = this_input.day;
+    this_reminder.month = this_input.month;
+    strcpy(this_reminder.message, this_input.reminder_str); // messsage text from input w/o date
 
-    sprintf(day_str, "%2d", day); // Build day_str from parsed day... factor out
-    read_line(msg_str, MSG_LEN);
-    strcpy(this_reminder.message, msg_str);
+    // Strip trailing newline from message string
+    int last_char = strlen(this_reminder.message);
+    if (last_char > 1) last_char--;
+    if (this_reminder.message[last_char] == '\n') this_reminder.message[last_char] = 0;
 
-    this_reminder.time = get_time_from_message(msg_str, MSG_LEN);
+    this_reminder.time = get_time_from_message(this_reminder.message, MSG_LEN);
 
-    // Part B) inserting based on day/time
-    // Insert this_remninder into the reminders array
-    // Shuffle reminders down until r_ind is in the right spot
+    /* Part B) 
+       ----------------------------------------------------------------------
+       inserting based on day/time
+       Insert this_remninder into the reminders array
+       Shuffle reminders down until r_ind is in the right spot
+
+       Was using "minute of the month" in part B, but added a month/day field
+       for part C. This version does not check valid month/day combos for short
+       months
+     */
     for (r_num = num_remind; r_num >= 0; r_num--) {
       // Start at num_required
       if (r_num == 0) break;
-      int this_reminder_time = this_reminder.day*24*60 + this_reminder.time;
-      int last_reminder_time = reminders[r_num-1].day*24*60+reminders[r_num-1].time;
-      if (last_reminder_time > this_reminder_time){
+
+      mst_reminder last_reminder = reminders[r_num-1];
+
+      if (last_reminder.month > this_reminder.month){
+        // move last reminder down one slot
+        reminders[r_num] = reminders[r_num-1];
+
+      } else if (last_reminder.day > this_reminder.day) {
+        // move last_reminder down one slot
+        reminders[r_num] = reminders[r_num-1];
+      
+      } else if (last_reminder.time > this_reminder.time){
         // move last_reminder down one slot
         reminders[r_num] = reminders[r_num-1];
       } else {
+        // this is a good spot!
         break;
       }
     }
@@ -105,16 +155,9 @@ int main(void) {
 }
 
 
-// Reads user input up to `n` characters and stores it in `str`
-int read_line(char str[], int n){
-  int ch, i = 0;
 
-  while ((ch = getchar()) != '\n')
-     if (i < n)
-       str[i++] = ch;
-  str[i] = '\0';
-  return i;
-}
+
+
 
 int get_time_from_message(char str[], int n){
   int time_of_day = ((DEFAULT_HOUR * 60) + DEFAULT_MINUTE);
@@ -126,7 +169,7 @@ int get_time_from_message(char str[], int n){
   char *pf = found_time;
 
   while (*pt){
-    printf("Processing `%c`\n", *pt);
+    if (DEBUG_PRINT) printf("Processing `%c`\n", *pt);
     // Loop through initial input if it is numerical (ignore whitespace?)
     if (*pt <= '9' && *pt >= '0'){
       *pf++ = *pt++;
@@ -141,11 +184,11 @@ int get_time_from_message(char str[], int n){
       continue;
     } else {
       // No valid time string was found (non numeric and non whitespace)
-      printf("No valid time found\n");
+      if (DEBUG_PRINT) printf("No valid time found\n");
       return time_of_day;
     }
   }
-  printf("Found time substring\n");
+  if (DEBUG_PRINT) printf("Found time substring\n");
 
   // Compute time_of_day from found_time;
   // Do my own ascii to int conversions
@@ -161,6 +204,111 @@ int get_time_from_message(char str[], int n){
     minute_found = (min[0]-'0')*10 + min[1]-'0';
   }
  
-  printf("Found %2d hour and %2d minute\n", time_of_day, minute_found);
+  if (DEBUG_PRINT) printf("Found %2d hour and %2d minute\n", time_of_day, minute_found);
   return time_of_day + minute_found;
 }
+
+
+
+
+// fmt_str: d is digit, c is char, supports '/' character
+bool is_string_valid_format(char *fmt_str, const char* str){
+  int len_fmt = strlen(fmt_str);
+  const char* ps = str;
+  char* pf = fmt_str;
+  while (pf - fmt_str < len_fmt){
+    switch (*pf) {
+      case 'd':
+        if (!(*ps <= '9' && *ps >= '0'))
+          return false;
+        break;
+
+      case 'c':
+        if (!((*ps <= 'z' && *ps >= 'a') || (*ps <= 'z' && *ps >= 'a')))
+          return false;
+        break;
+
+      case '/':
+        if (*ps != '/')
+          return false;
+        break;
+    
+    }
+    pf++;
+    ps++;
+  }
+
+  return true;
+}
+
+
+// returns .day = -1 and .month = -1 if invalid user input
+mst_user_input get_user_input(char * prompt_str){
+  char *p_msg_start;
+  mst_user_input response;
+
+  char msg_str[MSG_LEN + 8];
+  char day_str[3], month_str[3];
+
+  printf("%s", prompt_str);
+  fgets(msg_str, MSG_LEN, stdin);
+  if (!is_string_valid_format("dd/dd", msg_str)){
+    response.day = -1;
+    response.month = -1;
+    strcpy(response.original_str, msg_str);
+    response.reminder_str[0] = '\0';
+    return response;
+  }
+
+  // Set msg_start pointer to first character after 'mm/dd '
+  p_msg_start = &msg_str[5];
+
+  day_str[0] = msg_str[3]; 
+  day_str[1] = msg_str[4]; 
+  day_str[2] = 0; 
+
+  response.day = int_from_str(day_str);
+
+  month_str[0] = msg_str[0];
+  month_str[1] = msg_str[1];
+  month_str[2] = 0;
+
+  response.month = int_from_str(month_str);
+
+  strcpy(response.original_str, msg_str);
+  strcpy(response.reminder_str, p_msg_start);
+
+  return response;
+}
+
+// Requires a c-string, null-terminated.
+// Only supports positive integers
+/*
+   int int_from_str(const char *str){
+   int end = strlen(str);
+   int this_int = 0;
+   int place_coefficient = 1;
+
+   if (end < 1)
+   return this_int;
+
+   end--; // Start on last character, not null-terminator
+
+   for (int i = end; i>=0; i--){
+// printf("%d's place = %c\n", place_coefficient, str[i]);
+this_int += (str[i] - '0')*place_coefficient;
+place_coefficient *= 10;
+}
+return this_int;
+}
+ */
+
+void print_input(mst_user_input input){
+  printf("    day: %d\n", input.day);
+  printf("  month: %d\n", input.month);
+  printf("    raw: %s\n", input.original_str);
+  printf("rem str: %s\n", input.reminder_str);
+}
+
+
+
