@@ -2,6 +2,13 @@
 #include <stdio.h>
 #endif // <stdio.h>
 
+#ifndef __STDBOOL_H
+#include <stdbool.h>
+#endif // <stdbool.h>
+
+#define STR_BUFF_LEN 512
+typedef char ncb_buff_str[STR_BUFF_LEN];
+
 /* This function clears the console input buffer by reading up to a newline
  * or EOF and chucking the results.
  * fflush(stdin) does not work on MacOS (and others) as it is undefined.
@@ -36,4 +43,39 @@ int int_from_str(const char *str){
     place_coefficient *= 10;
   }
   return this_int;
+}
+
+
+
+// fmt_str: d is digit, c is char, supports '/' character
+bool is_string_valid_format(char *fmt_str, const char* str){
+  int len_fmt = 0;
+  const char* ps = str;
+  char* pf = fmt_str;
+
+  while (*fmt_str) {fmt_str++;} // My strlen()
+
+  while (pf - fmt_str < len_fmt){
+    switch (*pf) {
+      case 'd':
+        if (!(*ps <= '9' && *ps >= '0'))
+          return false;
+        break;
+
+      case 'c':
+        if (!((*ps <= 'z' && *ps >= 'a') || (*ps <= 'z' && *ps >= 'a')))
+          return false;
+        break;
+
+      case '/':
+        if (*ps != '/')
+          return false;
+        break;
+    
+    }
+    pf++;
+    ps++;
+  }
+
+  return true;
 }
