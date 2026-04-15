@@ -2,6 +2,9 @@
 #include <stdio.h>
 #endif // <stdio.h>
 
+void clear_input_buffer(); // Clear the input buffer by reading up to newline
+int int_from_str(const char *str); // c-string to positive integer, no check
+
 /* This function clears the console input buffer by reading up to a newline
  * or EOF and chucking the results.
  * fflush(stdin) does not work on MacOS (and others) as it is undefined.
