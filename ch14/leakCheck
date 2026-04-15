@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+export MallocStackLogging=1
+leaks --atExit --list -- "${@:1}" 2>/dev/null
+
