@@ -2,6 +2,13 @@
 #include <stdio.h>
 #endif // <stdio.h>
 
+#ifndef __STDBOOL_H
+#include <stdbool.h>
+#endif // <stdbool.h>
+
+#define STR_BUFF_LEN 512
+typedef char ncb_buff_str[STR_BUFF_LEN];
+
 void clear_input_buffer(); // Clear the input buffer by reading up to newline
 int int_from_str(const char *str); // c-string to positive integer, no check
 
@@ -39,4 +46,39 @@ int int_from_str(const char *str){
     place_coefficient *= 10;
   }
   return this_int;
+}
+
+
+
+// fmt_str: d is digit, c is char, supports '/' character
+bool is_string_valid_format(char *fmt_str, const char* str){
+  int len_fmt = 0;
+  const char* ps = str;
+  char* pf = fmt_str;
+
+  while (*fmt_str) {fmt_str++;} // My strlen()
+
+  while (pf - fmt_str < len_fmt){
+    switch (*pf) {
+      case 'd':
+        if (!(*ps <= '9' && *ps >= '0'))
+          return false;
+        break;
+
+      case 'c':
+        if (!((*ps <= 'z' && *ps >= 'a') || (*ps <= 'z' && *ps >= 'a')))
+          return false;
+        break;
+
+      case '/':
+        if (*ps != '/')
+          return false;
+        break;
+    
+    }
+    pf++;
+    ps++;
+  }
+
+  return true;
 }
