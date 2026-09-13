@@ -18,10 +18,10 @@ int main(void){
   for (;;) {
     word_len = read_word(word, MAX_WORD_LEN+1);
     // word_len = strlen(word);
-    printf("word_len = %d\tword = '%s'\n", word_len, word);
+    // printf("word_len = %d\tword = '%s'\n", word_len, word);
 
     if (word_len == 0) {
-      printf("I am flushing the line\n");
+      // printf("I am flushing the line\n");
       flush_line();
       return 0;
     }

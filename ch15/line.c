@@ -31,6 +31,8 @@ int space_remaining() {
 
 void write_line() {
   int extra_spaces, spaces_to_insert, i, j;
+  int remainder_spaces, print_extra_space_now;
+  print_extra_space_now = 1;
 
   // extra_spaces = MAX_LINE_LEN - line_len;
   extra_spaces = space_remaining();
@@ -39,6 +41,21 @@ void write_line() {
       putchar(line[i]);
     else {
       spaces_to_insert = extra_spaces / (num_words-1);
+      remainder_spaces = extra_spaces % spaces_to_insert;
+
+      // Proj 1: If there are remainder spaces, then spacing is uneven.
+      // Add an extra space to spaces_to_insert if print_extra_space_now
+      // and toggle print_extra_space_now to spread them out.
+      // This isn't perfect, but it does result in more even distribution
+      if (remainder_spaces > 0) {
+        if (print_extra_space_now) {
+          spaces_to_insert += 1;
+          print_extra_space_now = 0;
+        } else {
+          print_extra_space_now = 1;
+        }
+      }
+
       for (j = 1; j <= spaces_to_insert + 1; j++)
         putchar(' ');
       extra_spaces -= spaces_to_insert;
