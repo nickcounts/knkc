@@ -28,6 +28,11 @@ int read_word(char *word, int len){
     ch = read_char();
   }
   word[pos] = '\0';
+
+  // Append the '*' to any words that are too long
+  if (pos > len-1)
+    word[len-1] = '*';
+
   return pos;
 }
 

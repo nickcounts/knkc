@@ -26,8 +26,9 @@ int main(void){
       return 0;
     }
 
-    if (word_len > MAX_WORD_LEN)
-      word[MAX_WORD_LEN] = '*';
+    // Moved to word.c
+    // if (word_len > MAX_WORD_LEN)
+    //   word[MAX_WORD_LEN] = '*';
 
     if (word_len + 1 > space_remaining()) {
       write_line();
