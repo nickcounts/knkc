@@ -1,6 +1,6 @@
 CFLAGS=-Wall -g
 
-SOURCES := $(wildcard proj*.c ex*.c idioms.c syntax.c)
+SOURCES := $(wildcard proj*.c ex*.c idioms.c syntax.c remind justify qsort)
 PRODUCTS := $(SOURCES:.c= *.o)
 SYMBOLS := $(SOURCES:.c=.dSYM)
 
@@ -66,6 +66,16 @@ qsort.o: qsort.c quicksort.h
 
 quicksort.o: quicksort.c quicksort.h
 	$(CC) -c quicksort.c
+
+
+remind: remind.o readline.o
+	$(CC) -o remind remind.o readline.o 
+
+remind.o: remind.c readline.h
+	$(CC) -c remind.c
+
+readline.o: readline.c readline.h
+	$(CC) -c readline.c
 
 all: $(SOURCES:.c= )
 
