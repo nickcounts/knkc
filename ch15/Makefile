@@ -68,6 +68,7 @@ quicksort.o: quicksort.c quicksort.h
 	$(CC) -c quicksort.c
 
 
+
 remind: remind.o readline.o
 	$(CC) -o remind remind.o readline.o 
 
@@ -76,6 +77,18 @@ remind.o: remind.c readline.h
 
 readline.o: readline.c readline.h
 	$(CC) -c readline.c
+
+
+
+rpn: proj05.o stack.o
+	$(CC) -o rpn proj05.o stack.o 
+
+proj05.o: proj05.c stack.h
+	$(CC) -c proj05.c
+
+stack.o: stack.h
+	$(CC) -c stack.c
+
 
 all: $(SOURCES:.c= )
 
