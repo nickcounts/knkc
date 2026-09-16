@@ -13,3 +13,7 @@
    of the increment in all the locations
 
  */
+
+int main(void) {
+  return 0;
+}
