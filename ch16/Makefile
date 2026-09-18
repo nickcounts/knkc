@@ -43,6 +43,14 @@ ex%: ex%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 	
+inventory: inventory.o readline.o
+	$(CC) -o inventory inventory.o readline.o
+
+inventory.o: inventory.c readline.h 
+	$(CC) -c inventory.c
+
+readline.o: readline.c readline.h 
+	$(CC) -c readline.c
 
 
 all: $(SOURCES:.c= )
