@@ -26,6 +26,7 @@ int num_parts = 0; // number of parts currently stored
 // --------------------------------------------
 
 int find_part(int number);
+void print_help(void);
 void insert(void); /* Inserts a new part into inventory */
 void search(void);
 void update(void);
@@ -72,6 +73,7 @@ int main(void) {
         
       default:   // print error/help 
         printf("Illegal code\n");
+        print_help();
     }
     printf("\n");
   }
@@ -176,3 +178,17 @@ void print(){
                                     inventory[i].name, 
                                     inventory[i].on_hand);
 }
+
+
+// Prints a listing of operation codes and instructions
+void print_help(void){
+  printf("The following commands are supported:\n");
+  printf(YELLOW "i" CYAN "nsert" RESET " : add a new part to the database\n");
+  printf(YELLOW "s" CYAN "earch" RESET " : search by part number\n");
+  printf(YELLOW "u" CYAN "pdate" RESET " : update quantity of a part\n");
+  printf(YELLOW "p" CYAN "rint " RESET " : print inventory\n");
+  printf(YELLOW "q" CYAN "uit  " RESET " : exit the program\n");
+}
+
+
+
