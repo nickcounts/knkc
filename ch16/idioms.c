@@ -113,6 +113,17 @@ const struct dialing_code country_codes[] = {
 };
 
 
+#define INT_KIND 0 
+#define DOUBLE_KIND 1 
+
+  typedef struct {
+    int kind; // tag fild 
+    union {
+      int i;
+      double d;
+    } u;
+  } Number;
+
 
 // --------------------------------------------
 // Function Definitions
@@ -132,7 +143,12 @@ struct part build_part(int number, const char* name, int on_hand){
   return p;
 }
 
-
+void print_number(Number n) {
+  if (n.kind == INT_KIND)
+    printf("%d", n.u.i);
+  else 
+    printf("%g", n.u.d);
+}
 
 
 
@@ -184,6 +200,18 @@ int main(void) {
   inventory[0].on_hand = part3.on_hand;
 
   print_part(inventory[0]);
+
+
+  // Unions and Typedefs
+
+  Number n;
+  n.kind = INT_KIND;
+  n.u.i = 82; 
+
+  printf("Printing Number n : ");
+  print_number(n);
+  printf("\n");
+
 
 
   return 0;
