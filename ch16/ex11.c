@@ -33,6 +33,9 @@
  * Total bytes: 8 + 8 + 4 = 20 bytes
  */
 
-
+// Function to allow `make all` to complete
+int main(void) {
+  return 0;
+}
 
 
