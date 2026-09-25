@@ -165,7 +165,7 @@ void print_board(void){
   Square this_square;
 
   for (int row = 7; row>=0; row--){
-    printf(C_RESET "Row %d : ", row);
+    printf(C_RESET "Row %d : ", row + 1);
 
     for (int col = 0; col<8; col++){
       this_square = board[row][col];
