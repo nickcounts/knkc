@@ -63,8 +63,8 @@ typedef enum {
 } Pieces;
 
 typedef enum {
-  BK, // Default color
-  WT,
+  BK = 0, // Default color
+  WT = 1,
 } Color;
 
 
@@ -83,14 +83,14 @@ typedef struct {
 // --------------------------------------------------------
 
 Square board[8][8] = {
-  {{BK, R}, {BK, N}, {BK, B}, {BK, Q}, {BK, K}, {BK, B}, {BK, N}, {BK, R}},
-  {{BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}},
-  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
-  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
-  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
-  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
-  {{WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}},
   {{WT, R}, {WT, N}, {WT, B}, {WT, Q}, {WT, K}, {WT, B}, {WT, N}, {WT, R}},
+  {{WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}, {WT, P}},
+  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
+  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
+  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
+  {{BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}, {BK, E}},
+  {{BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}, {BK, P}},
+  {{BK, R}, {BK, N}, {BK, B}, {BK, Q}, {BK, K}, {BK, B}, {BK, N}, {BK, R}},
 };
 
 
@@ -99,19 +99,19 @@ Square board[8][8] = {
 // Above and Beyond Functions
 // --------------------------------------------------------
 
-#define W_KING   "\u2654"
-#define W_QUEEN  "\u2655"
-#define W_ROOK   "\u2656"
-#define W_BISH   "\u2657"
-#define W_KNIGHT "\u2658"
-#define W_PAWN   "\u2659"
+#define O_KING   "\u2654"
+#define O_QUEEN  "\u2655"
+#define O_ROOK   "\u2656"
+#define O_BISH   "\u2657"
+#define O_KNIGHT "\u2658"
+#define O_PAWN   "\u2659"
 
-#define B_KING   "\u265A"
-#define B_QUEEN  "\u265B"
-#define B_ROOK   "\u265C"
-#define B_BISH   "\u265D"
-#define B_KNIGHT "\u265E"
-#define B_PAWN   "\u265F"
+#define S_KING   "\u265A"
+#define S_QUEEN  "\u265B"
+#define S_ROOK   "\u265C"
+#define S_BISH   "\u265D"
+#define S_KNIGHT "\u265E"
+#define S_PAWN   "\u265F"
 
 //                                  [FG]      [BG]
 #define C_DARK_SQUARE_BK  "\x1b[38;5;235;48;5;242m"
@@ -120,8 +120,48 @@ Square board[8][8] = {
 #define C_LIGHT_SQUARE_BK "\x1b[38;5;235;48;5;252m"
 #define C_LIGHT_SQUARE_WT "\x1b[38;5;255;48;5;252m"
 
+// Pass the color of the squ
+void print_piece(Color cs, Color cp, Pieces p){
+  int use_outline = 0;
+
+  // All are solid, regular color except white on white
+  if (cs == BK){
+    cp == WT ? printf(C_DARK_SQUARE_WT) : printf(C_DARK_SQUARE_BK);
+  } else if (cp == BK) {
+    printf(C_LIGHT_SQUARE_BK);
+  } else {
+    printf(C_LIGHT_SQUARE_BK);
+    use_outline = 1;
+  }
+  
+  // printf("%d%d%d%d",cs,cp,p,use_outline);
+
+  printf(" ");
+  if (p == E) {
+    printf(" ");
+    printf(" ");
+    return;
+  }
+
+  if (p == P)
+    use_outline ? printf(O_PAWN)   : printf(S_PAWN)  ;
+  if (p == N)
+    use_outline ? printf(O_KNIGHT) : printf(S_KNIGHT);
+  if (p == B)
+    use_outline ? printf(O_BISH)   : printf(S_BISH)  ;
+  if (p == R)
+    use_outline ? printf(O_ROOK)   : printf(S_ROOK)  ;
+  if (p == Q)
+    use_outline ? printf(O_QUEEN)  : printf(S_QUEEN) ;
+  if (p == K)
+    use_outline ? printf(O_KING)   : printf(S_KING)  ;
+  printf(" ");
+}
+
+
 void print_board(void){
-  Color this_square_color = WT;
+  Color square_color = WT;
+  Color piece_color  = WT;
   Square this_square;
 
   for (int row = 7; row>=0; row--){
@@ -129,89 +169,21 @@ void print_board(void){
 
     for (int col = 0; col<8; col++){
       this_square = board[row][col];
+      piece_color = this_square.color;
 
-      // Print Alternating Square Color
-      if (this_square_color == BK)  // DARK SQUARE
-        printf(C_DARK_SQUARE_WT);
-        // if (this_square.color == BK) 
-        //   printf(C_DARK_SQUARE_WT);
-        // else 
-        //   printf(C_DARK_SQUARE_BK);
-
-      else                          // LIGHT SQUARE
-        printf(C_LIGHT_SQUARE_WT); 
-        // if (this_square.color == WT)
-        //   printf(C_LIGHT_SQUARE_WT); 
-        // else
-        //   printf(C_LIGHT_SQUARE_BK);
-
-      this_square_color = !this_square_color;
-
-
-      switch (this_square.color){
-        case BK:
-          switch (this_square.piece) {
-            case P:
-              printf(B_PAWN);
-              break;
-            case N:
-              printf(B_KNIGHT);
-              break;
-            case B:
-              printf(B_BISH);
-              break;
-            case R:
-              printf(B_ROOK);
-              break;
-            case K:
-              printf(B_KING);
-              break;
-            case Q:
-              printf(B_QUEEN);
-              break;
-            default:
-              printf(" ");
-          }
-          break;
-        case WT:
-          switch (this_square.piece) {
-            case P:
-              printf(W_PAWN);
-              break;
-            case N:
-              printf(W_KNIGHT);
-              break;
-            case B:
-              printf(W_BISH);
-              break;
-            case R:
-              printf(W_ROOK);
-              break;
-            case K:
-              printf(W_KING);
-              break;
-            case Q:
-              printf(W_QUEEN);
-              break;
-            default:
-              printf(" ");
-          }
-      }
+      print_piece(square_color, piece_color, this_square.piece);
+      square_color = !square_color;
     }
+
     printf(C_RESET "\n"); // end of row
-    this_square_color = !this_square_color;
+    square_color = !square_color;
   }
+  printf("         A  B  C  D  E  F  G  H\n" );
 }
 
 
 int main(void) {
   print_board();
-
-  printf(C_DARK_SQUARE_WT "C_DARK_SQUARE_WT"   C_RESET "\n");
-  printf(C_DARK_SQUARE_BK "C_DARK_SQUARE_BK"   C_RESET "\n");
-  printf(C_LIGHT_SQUARE_WT "C_LIGHT_SQUARE_WT" C_RESET "\n");
-  printf(C_LIGHT_SQUARE_BK "C_LIGHT_SQUARE_BK" C_RESET "\n");
-
   return 0;
 }
 
