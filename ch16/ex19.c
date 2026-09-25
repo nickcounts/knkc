@@ -1,4 +1,4 @@
-/* Chapter 16, Exercise 18
+/* Chapter 16, Exercise 19
  *
  * Declare a structure with the following members whos tag is a pinball
  * machine:
