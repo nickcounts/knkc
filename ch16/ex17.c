@@ -63,3 +63,10 @@ int main(void){
 
   return 0;
 }
+
+// Answer from KNKing:
+//
+// All the statements are legal, since C allows integers and enumeration values
+// to be mixed without restriction. Only (a), (d), and (e) are safe. (b) is not
+// meaningful if i has a value other than 0 or 1. (c) will not yield a
+// meaningful result if b has the value 1.
