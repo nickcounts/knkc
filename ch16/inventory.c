@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "readline.h"
+#include "inventory_struct.h"
+#include "proj2.h"
+
 
 #define MARS_RED "\x1b[38;5;214m"
 #define YELLOW   "\x1b[33m"
@@ -13,11 +16,7 @@
 
 
 // Structure Tag:
-struct part {
-  int     number;
-  char    name[NAME_LEN + 1];
-  int     on_hand;
-} inventory[MAX_PARTS];
+struct part inventory[MAX_PARTS];
 
 int num_parts = 0; // number of parts currently stored
 
@@ -31,6 +30,7 @@ void insert(void); /* Inserts a new part into inventory */
 void search(void);
 void update(void);
 void print(void);
+void print_ordered(void); // Project 2 - print ordered by PN
 
 // ----------------------------------------------------------------------------
 // main:  Prompts the user to enter an operation code, then calls a function to
@@ -66,6 +66,10 @@ int main(void) {
       case 'p' : // print
         print();
         break;       
+
+      case 'l' : // list in part number order (Proj 2)
+        print_ordered();
+        break;
 
       case 'q' : // quit
         printf("Thank you for shopping at " MARS_RED "MARS" RESET "\n");
@@ -179,6 +183,14 @@ void print(){
                                     inventory[i].on_hand);
 }
 
+// This function sorts the master array! There are SIDE EFFECTS
+void print_ordered(void){
+  quicksort_inventory(inventory, 0, num_parts);
+  print();
+}
+
+
+
 
 // Prints a listing of operation codes and instructions
 void print_help(void){
@@ -187,6 +199,7 @@ void print_help(void){
   printf(YELLOW "s" CYAN "earch" RESET " : search by part number\n");
   printf(YELLOW "u" CYAN "pdate" RESET " : update quantity of a part\n");
   printf(YELLOW "p" CYAN "rint " RESET " : print inventory\n");
+  printf(YELLOW "l" CYAN "ist " RESET " : print inventory in part number order\n");
   printf(YELLOW "q" CYAN "uit  " RESET " : exit the program\n");
 }
 
