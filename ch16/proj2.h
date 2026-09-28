@@ -8,6 +8,5 @@
 #include "inventory_struct.h"
 
 void quicksort_inventory(struct part a[], int first_ind, int last_ind);
-int split(struct part a[], int low, int high);
 
 

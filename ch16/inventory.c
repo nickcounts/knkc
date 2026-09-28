@@ -8,9 +8,10 @@
 #define MARS_RED "\x1b[38;5;214m"
 #define YELLOW   "\x1b[33m"
 #define CYAN     "\x1b[36m"
+#define GREEN    "\x1b[92m"
 #define RESET    "\x1b[0m"
 
-#define NAME_LEN 31
+#define NAME_LEN  31
 #define MAX_PARTS 100
 
 
@@ -85,6 +86,8 @@ int main(void) {
   return 0;
 }
 
+
+
 // Looks up a part number in the inventory array and returns the array index for
 // the matchine part. If not found, returns -1
 int find_part(int number){
@@ -95,6 +98,8 @@ int find_part(int number){
   }
   return -1;
 }
+
+
 
 // Prompts the user for information about a new part and then inserts the part
 // into the database. Pritns an error message and returns prematurely if the
@@ -120,14 +125,16 @@ void insert(){
   printf("Enter the part name: ");
   name_chars = read_line(inventory[num_parts].name, NAME_LEN) ;
 
-
-  // strcpy(inventory[num_parts].name, "This is a test");
-
   printf("Enter quantity on hand: ");
   scanf("%d", &inventory[num_parts].on_hand);
 
+  printf("Enter unit price (in cents): ");
+  scanf("%d", &inventory[num_parts].unit_price);
+
   num_parts++;
 }
+
+
 
 // Prompts the user to enter a part number then looks up the part in the
 // database. If the part exists, prints the name and quantity on hand. If not,
@@ -148,6 +155,8 @@ void search(){
   printf("Qty on hand : %d\n", inventory[i].on_hand);
 
 }
+
+
 
 // Prompts the user to enter a part number. Prints an error message if the part
 // doesn't exist; otherwise primpts the user to enter the change in quantity on
@@ -170,25 +179,38 @@ void update(){
 }
 
 
+
 // prints a listing of all parts in the database, showing the part number, part
 // name, and quantity on hand. Parts are pritned in the order in which they were
 // entered into the database
 void print(){
-  int i;
-  printf("Part Number   Part Name              Qty On Hand\n");
-  for (i = 0; i < num_parts; i++)
-    printf(YELLOW "%10d    " CYAN "%-32s" RESET "%d\n",   
-                                    inventory[i].number, 
-                                    inventory[i].name, 
-                                    inventory[i].on_hand);
+  int i, dollars, cents;
+
+  printf("%11s " "%-32s " "%-6s " "%-s\n",
+      "Part Number", "Part Name", "Qty", "Price");
+
+  for (i = 0; i < num_parts; i++) {
+    cents = inventory[i].unit_price % 100;
+    dollars = inventory[i].unit_price / 100;
+    printf(YELLOW "%11d " 
+           CYAN "%-32s " 
+           RESET "%-6d "
+           GREEN "$%4d.%02d" RESET"\n",   
+           inventory[i].number, 
+           inventory[i].name, 
+           inventory[i].on_hand,
+           dollars, cents
+          );
+    }
 }
+
+
 
 // This function sorts the master array! There are SIDE EFFECTS
 void print_ordered(void){
-  quicksort_inventory(inventory, 0, num_parts);
+  quicksort_inventory(inventory, 0, num_parts-1);
   print();
 }
-
 
 
 
@@ -199,7 +221,7 @@ void print_help(void){
   printf(YELLOW "s" CYAN "earch" RESET " : search by part number\n");
   printf(YELLOW "u" CYAN "pdate" RESET " : update quantity of a part\n");
   printf(YELLOW "p" CYAN "rint " RESET " : print inventory\n");
-  printf(YELLOW "l" CYAN "ist " RESET " : print inventory in part number order\n");
+  printf(YELLOW "l" CYAN "ist "  RESET " : print inventory in part number order\n");
   printf(YELLOW "q" CYAN "uit  " RESET " : exit the program\n");
 }
 

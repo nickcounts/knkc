@@ -14,6 +14,7 @@ struct part {
   int     number;
   char    name[NAME_LEN + 1];
   int     on_hand;
+  int     unit_price; // price in cents
 };
 
 #endif
