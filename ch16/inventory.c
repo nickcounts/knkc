@@ -27,6 +27,7 @@ int insert(struct part inventory[], int num_parts); /* Inserts a new part into i
 void search(struct part inventory[], int num_parts); 
 
 void update(struct part inventory[], int num_parts);
+void change_price(struct part inventory[], int num_parts); // Project 4 - unit price
 void print( struct part inventory[], int num_parts);
 void print_ordered(struct part inventory[], int num_parts); // Project 2 - print ordered by PN
 
@@ -63,6 +64,10 @@ int main(void) {
 
       case 'u' : // update
         update(inventory, num_parts);
+        break;       
+
+      case 'c' : // change price (Proj 4)
+        change_price(inventory, num_parts);
         break;       
 
       case 'p' : // print
@@ -181,6 +186,27 @@ void update(struct part inventory[], int num_parts){
 
 
 
+// Prompts the user to enter a part number. Prints an error message if the part
+// doesn't exist; otherwise primpts the user to enter a new price and updates 
+// the database
+void change_price(struct part inventory[], int num_parts){
+  int i, number, price;
+
+  printf("Enter part number: ");
+  scanf("%d", &number);
+  i = find_part(inventory, num_parts, number);
+  if (i < 0) {
+    printf("Part not found.\n");
+    return;
+  }
+
+  printf("Enter updated price (in cents): ");
+  scanf("%d", &price);
+  inventory[i].unit_price = price;
+}
+
+
+
 // prints a listing of all parts in the database, showing the part number, part
 // name, and quantity on hand. Parts are pritned in the order in which they were
 // entered into the database
@@ -221,8 +247,9 @@ void print_help(void){
   printf(YELLOW "i" CYAN "nsert" RESET " : add a new part to the database\n");
   printf(YELLOW "s" CYAN "earch" RESET " : search by part number\n");
   printf(YELLOW "u" CYAN "pdate" RESET " : update quantity of a part\n");
+  printf(YELLOW "c" CYAN "hange" RESET " : change price of a part\n");
   printf(YELLOW "p" CYAN "rint " RESET " : print inventory\n");
-  printf(YELLOW "l" CYAN "ist "  RESET " : print inventory in part number order\n");
+  printf(YELLOW "l" CYAN "ist  " RESET " : print inventory in part number order\n");
   printf(YELLOW "q" CYAN "uit  " RESET " : exit the program\n");
 }
 
