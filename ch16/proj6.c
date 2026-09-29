@@ -17,44 +17,66 @@
 
 #include <stdio.h>
 
+// From Ch16, Ex 5
+struct date {
+  int month;
+  int day;
+  int year;
+};
+
+ 
+ // Returns -1 if d1 is an earlier date than `d2`, +1 if `d1` is later
+ // that `d2` and 0 if they are the same
+ int compare_dates(struct date d1, struct date d2) {
+
+   // Handle obvious year differences
+   if (d1.year > d2.year)
+     return 1;
+   else if (d1.year < d2.year)
+     return -1;
+
+   // Handle obvious month differences
+   if (d1.month > d2.month)
+     return 1;
+   else if (d1.month < d2.month)
+     return -1;
+
+   // Handle obvious day differences
+   if (d1.day > d2.day)
+     return 1;
+   else if (d1.day < d2.day)
+     return -1;
+
+   return 0;
+ }
+
+
+void print_cmp(struct date early, struct date later){
+  printf("%d/%d/%d is earlier than %d/%d/%d.\n",
+      early.month, early.day, early.year,
+      later.month, later.day, later.year);
+}
+
+
 
 int main(void){
-  int y1,y2,m1,m2,d1,d2;
+  // int y1,y2,m1,m2,d1,d2;
+  struct date d1, d2;
   printf("Enter first date (mm/dd/yy): ");
-  scanf("%d/%d/%d", &m1, &d1, &y1);
+  scanf("%d/%d/%d", &d1.month, &d1.day, &d1.year);
 
   printf("Enter second date (mm/dd/yy): ");
-  scanf("%d/%d/%d", &m2, &d2, &y2);
+  scanf("%d/%d/%d", &d2.month, &d2.day, &d2.year);
 
-  if (y1<y2){
-    printf("1 is earlier than 2\n");
-    return 0;
-  }
-
-  else if (y2 < y1){
-    printf("2 is earlier than 2\n");
-    return 0;
-  }
-
-  if (m1<m2){
-    printf("1 is earlier than 2\n");
-    return 0;
-  }
-  else if (m2 < m1){
-    printf("2 is earlier than 2\n");
-    return 0;
+  int cmp = compare_dates(d1, d2);
+  if (cmp < 0){
+    print_cmp(d1, d2);
+  } else if ( cmp > 0){
+    print_cmp(d2, d1);
+  }else {
+    printf("Both dates are the same\n");
   }
 
-  if (d1<d2){
-    printf("1 is earlier than 2\n");
-    return 0;
-  }
-  else if (d2 < d1){
-    printf("2 is earlier than 2\n");
-    return 0;
-  }
-
-  printf("Both dates are the same\n");
   return 0;
 
 }
