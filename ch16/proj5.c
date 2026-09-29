@@ -17,44 +17,52 @@
 
 #define NUM_TRAINS 8
 
-char dept_strs[][NUM_TRAINS] = {"08:00", "09:43", "11:19", "12:47",
-                                "14:00", "15:45", "19:00", "21:45"};
-char arvl_strs[][NUM_TRAINS] = {"10:16", "11:52", "13:31", "15:00",
-                                "16:08", "17:55", "21:20", "23:58"};
-int dept_ints[sizeof(dept_strs) / (sizeof(char) * NUM_TRAINS)];
-
-struct trains {
+struct train {
   int depart;
   int arrive;
-  char arrive_str[6];
   char depart_str[6];
+  char arrive_str[6];
 };
 
+
+
+// Return the number of minutes from midnight for a given time
 int time_to_minutes_from_midnight(int hours, int minutes) {
   return (hours * 60) + minutes;
 }
 
-void make_trains_array(struct trains trains[]) {
+
+
+// StringToMinutes - parse the time string to minutes-from-midnight
+int stom(const char* s){
   int hr, min;
-  int array_len = sizeof(dept_ints) / sizeof(int);
-  for (int i = 0; i < array_len; i++) {
-    sscanf(dept_strs[i], "%d:%d", &hr, &min);
-    trains[i].depart = time_to_minutes_from_midnight(hr, min);
-
-    sscanf(arvl_strs[i], "%d:%d", &hr, &min);
-    trains[i].arrive = time_to_minutes_from_midnight(hr, min);
-
-    strcpy(trains[i].arrive_str, arvl_strs[i]);
-    strcpy(trains[i].depart_str, dept_strs[i]);
-  }
+  sscanf(s, "%d:%d", &hr, &min);
+  return time_to_minutes_from_midnight(hr, min);
 }
 
 
-int get_closest_departure_index(int my_time_minutes, struct trains trains[]) {
+
+// Make a train struct from two time strings. Useful for building initial
+// data from human-readable input
+struct train train_entry(const char* dept, const char* arvl){
+  struct train t = {
+    .depart = stom(dept),
+    .arrive = stom(arvl),
+  };
+  strcpy(t.depart_str, dept);
+  strcpy(t.arrive_str, arvl);
+  return t;
+}
+
+
+
+// Find the next train. Pass the trains array and the number of elements in the
+// array
+int get_closest_departure_index(int my_time_minutes, struct train trains[], int n) {
   int this_delta, index, this_index = 0;
   int delta = 60 * 60 * 24;
-  int array_len = sizeof(dept_ints) / sizeof(int);
-  for (this_index = 0; this_index < array_len; this_index++) {
+
+  for (this_index = 0; this_index < n; this_index++) {
     this_delta = abs(my_time_minutes - trains[this_index].depart);
     if (this_delta < delta) {
       index = this_index;
@@ -64,16 +72,32 @@ int get_closest_departure_index(int my_time_minutes, struct trains trains[]) {
   return index;
 }
 
+
+
 int main(void) {
-  struct trains trains[NUM_TRAINS];
-  make_trains_array(trains);
+
+  struct train trains[NUM_TRAINS] = {
+    train_entry("08:00","10:16"),
+    train_entry("09:43","11:52"),
+    train_entry("11:19","13:31"),
+    train_entry("12:47","15:00"),
+    train_entry("14:00","16:08"),
+    train_entry("15:45","17:55"),
+    train_entry("19:00","21:20"),
+    train_entry("21:45","23:58"),
+  };
+
 
   int input_hr, input_min;
   printf("Enter a 24-hour time: ");
   scanf("%d:%d", &input_hr, &input_min);
+  if (input_hr > 23){
+    printf("Please enter a valid time in the form HH:MM\n");
+    return 1;
+  }
 
   int closest = get_closest_departure_index(
-      time_to_minutes_from_midnight(input_hr, input_min), trains);
+      time_to_minutes_from_midnight(input_hr, input_min), trains, NUM_TRAINS);
 
   printf("Closest departure time is %s, arriving at %s\n", trains[closest].depart_str,
          trains[closest].arrive_str);
